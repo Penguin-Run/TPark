@@ -95,11 +95,11 @@ int isUnupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
-void sortOutput(softConfig* configs) {
+softConfig** sortOutput(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
     printf("%d %d\n", halfYear.year, halfYear.month);
 
-    softConfig* sortedConfigs[HARD_DATA_SIZE];
+    softConfig** sortedConfigs = malloc(HARD_DATA_SIZE * sizeof(softConfig*));
 
     int sortCount = 0;
     for (int i = 0; i < HARD_DATA_SIZE; i++) {
@@ -109,11 +109,16 @@ void sortOutput(softConfig* configs) {
         }
     }
 
-    for (int i = 0; i < sortCount; i++) {
-        printf("%s      %d %d\n", sortedConfigs[i]->name, sortedConfigs[i]->installDate.year, sortedConfigs[i]->installDate.month);
-    }
+    return sortedConfigs;
 }
 
+void print(softConfig** configs) {
+    int i = 0;
+    while(configs[i]) {
+        printf("%s      %d %d\n", configs[i]->name, configs[i]->installDate.year, configs[i]->installDate.month);
+        i++;
+    }
+}
 
 
 
@@ -121,6 +126,7 @@ int main() {
     softConfig* configs = malloc(HARD_DATA_SIZE * sizeof(softConfig));
     hardData(configs);
 
-    sortOutput(configs);
+    softConfig** sortedConfigs = sortOutput(configs);
+    print(sortedConfigs);
     return 0;
 }

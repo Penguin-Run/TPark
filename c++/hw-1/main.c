@@ -38,7 +38,7 @@ void hardData(softConfig* configs) {
                      "Utilities",
                      1344,
                      {23, 6, 2019},
-                     {23, 06, 2019}
+                     {23, 6, 2019}
     };
     configs[1] = b;
 
@@ -46,7 +46,7 @@ void hardData(softConfig* configs) {
                      "DevTools",
                      3764,
                      {12, 1, 2020},
-                     {19, 10, 2020}
+                     {12, 1, 2020}
     };
     configs[2] = c;
 
@@ -69,11 +69,12 @@ date getDate(time_t deltaAgo) {
     date halfYearDate = {
             halfYear->tm_mday,
             halfYear->tm_mon,
-            halfYear->tm_year
+            halfYear->tm_year + 1900
     };
     return halfYearDate;
 }
 
+// first > second = 1; first < second = 2; first == second = 0;
 int datecmp(date first, date second) {
     if (first.year > second.year) return 1;
     else if (first.year < second.year) return 2;
@@ -89,14 +90,31 @@ int datecmp(date first, date second) {
 
 }
 
+// 0 - has been updated at least one time, 1 - no updates done
+int isUnupdated(date first, date second) {
+    return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
+}
+
 void sortOutput(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
-    
+    printf("%d %d\n", halfYear.year, halfYear.month);
+
+    softConfig* sortedConfigs[HARD_DATA_SIZE];
+
+    int sortCount = 0;
+    for (int i = 0; i < HARD_DATA_SIZE; i++) {
+        if (datecmp(configs[i].installDate, halfYear) == 2 && isUnupdated(configs[i].installDate, configs[i].lastUpdateDate)) {
+            sortedConfigs[sortCount] = &configs[i];
+            sortCount++;
+        }
+    }
+
+    for (int i = 0; i < sortCount; i++) {
+        printf("%s      %d %d\n", sortedConfigs[i]->name, sortedConfigs[i]->installDate.year, sortedConfigs[i]->installDate.month);
+    }
 }
 
 
-
-// double difftime(time_t time1, time_t time2)
 
 
 int main() {

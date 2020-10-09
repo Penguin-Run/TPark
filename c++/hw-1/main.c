@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "soft_config.h"
+#include "string.h"
 
 // add time.h ???
 
-#define HARD_DATA_SIZE 4
+#define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
 
 void consoleInput();
@@ -50,14 +51,21 @@ void hardData(softConfig* configs) {
     };
     configs[2] = c;
 
-    softConfig d = { "Spotify",
-                     "Entertainment",
+    softConfig d = { "RubyMine",
+                     "DevTools",
                      2948,
-                     {21, 8, 2020},
-                     {21, 8, 2020}
+                     {12, 1, 2020},
+                     {12, 1, 2020}
     };
     configs[3] = d;
 
+    softConfig e = { "Spotify",
+                     "Entertainment",
+                     2948,
+                     {12, 1, 2020},
+                     {12, 1, 2020}
+    };
+    configs[4] = e;
 }
 
 // returns current date - deltaAgo (deltaAgo in seconds)
@@ -95,11 +103,11 @@ int isUnupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
-softConfig** sortOutput(softConfig* configs) {
+softConfig** dateSort(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
     printf("%d %d\n", halfYear.year, halfYear.month);
 
-    softConfig** sortedConfigs = malloc(HARD_DATA_SIZE * sizeof(softConfig*));
+    softConfig** sortedConfigs = calloc(HARD_DATA_SIZE, sizeof(softConfig*));
 
     int sortCount = 0;
     for (int i = 0; i < HARD_DATA_SIZE; i++) {
@@ -111,6 +119,89 @@ softConfig** sortOutput(softConfig* configs) {
 
     return sortedConfigs;
 }
+
+softConfig** ascendingSort(softConfig** configs) {
+    int isSorted = 1;
+    while(isSorted) {
+        isSorted = 0;
+        int i = 0;
+        while (configs[i+1]) {
+            if (strcmp(configs[i]->name, configs[i+1]->name) > 0) {
+                char* temp = configs[i]->name;
+                configs[i]->name = configs[i+1]->name;
+                configs[i+1]->name = temp;
+                isSorted = 1;
+            }
+            i++;
+        }
+    }
+
+    return configs;
+}
+
+softConfig*** groupSort(softConfig** configs) {
+    // найти все названия функц. классов
+    int funcClassCount = 0;
+    char* classNames[HARD_DATA_SIZE];
+    for (int i = 0; i < HARD_DATA_SIZE; i++) {
+        classNames[i] = "";
+    }
+    int i = 0;
+    while (configs[i]) {
+        int isInTheNames = 0;
+        for (int j = 0; j < HARD_DATA_SIZE; j++) {
+            if ((configs[i]->functionalClass != NULL) && (classNames[j] != NULL)) {
+                if (strcmp(configs[i]->functionalClass, classNames[j]) == 0) {
+                    isInTheNames = 1;
+                }
+            }
+        }
+        if (!isInTheNames) {
+            classNames[funcClassCount] = configs[i]->functionalClass;
+            printf("%s\n", classNames[funcClassCount]);
+            funcClassCount++;
+        }
+        i++;
+    }
+
+    // выделить массив под каждый из них
+    softConfig*** configGroups = calloc(funcClassCount, sizeof(softConfig**)); // ***?
+    for (i = 0; i < funcClassCount; i++) {
+        // count each group to optimize memory
+        configGroups[i] = calloc(HARD_DATA_SIZE, sizeof(softConfig*)); // !
+    }
+
+    // добавить элементы в соответствующие группы
+    int groupElemCounter[funcClassCount];
+    for (i = 0; i < funcClassCount; i++) groupElemCounter[i] = 0;
+    i = 0;
+    while(configs[i]) {
+        for (int j = 0; j < funcClassCount; j++) {
+            if (strcmp(classNames[j], configs[i]->functionalClass) == 0) {
+                configGroups[j][groupElemCounter[j]] = configs[i];
+                groupElemCounter[j]++;
+                printf("Element %s added in the group %s\n", configs[i]->name, classNames[j]);
+            }
+        }
+        i++;
+    }
+
+    // отсортировать элементы по алфавиту в рамках групп
+    for (i = 0; i < funcClassCount; i++) ascendingSort(configGroups[i]);
+    return configGroups;
+}
+
+// check if array of pointers is empty
+int isEmpty(softConfig** configs) {
+    int i = 0;
+    while(i < HARD_DATA_SIZE) {
+        if (configs[i])
+            return 0; // not empty
+        i++;
+    }
+    return 1; // empty
+}
+
 
 void print(softConfig** configs) {
     int i = 0;
@@ -126,7 +217,8 @@ int main() {
     softConfig* configs = malloc(HARD_DATA_SIZE * sizeof(softConfig));
     hardData(configs);
 
-    softConfig** sortedConfigs = sortOutput(configs);
-    print(sortedConfigs);
+    softConfig** sortedConfigs = dateSort(configs);
+    softConfig*** sortedConfigsss = groupSort(sortedConfigs);
+    print(sortedConfigsss[1]);
     return 0;
 }

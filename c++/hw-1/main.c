@@ -2,31 +2,79 @@
 #include <stdlib.h>
 #include "soft_config.h"
 #include "string.h"
-
-// add time.h ???
+#include "assert.h"
 
 #define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
 
-void consoleInput();
-    /*
-        int argsSize = -1;
-        scanf("%d", &argsSize);
-        printf("%d\n", argsSize);
-        softConfig* configs = malloc(argsSize * sizeof(softConfig));
-        softConfig current;
-        int count = 0;
-        while(count < argsSize) {
-            // configs[count] = current;
-            printf("dddd\n");
-            char* name;
-            int a = scanf("%s", name);
-            printf("%s  %d", name, a);
-            count++;
-        }
-    */
+void input_date(date* date) {
+    char *str = NULL;
+    while (!date->day || date->day > 31 || date->day < 1) {
+        printf("Enter day in range 1..31: ");
+        size_t linecap = 0;
+        getline(&str, &linecap, stdin);
+        date->day = atoi(str);
+    }
 
-void hardData(softConfig* configs) {
+    str = NULL;
+    while (!date->month || date->month > 12 || date->month < 1) {
+        printf("Enter month in range 1..12: ");
+        size_t linecap = 0;
+        getline(&str, &linecap, stdin);
+        date->month = atoi(str);
+    }
+
+    str = NULL;
+    while (!date->year || date->year < 0) {
+        printf("Enter year as a positive integer: ");
+        size_t linecap = 0;
+        getline(&str, &linecap, stdin);
+        date->year = atoi(str);
+    }
+    printf("\n");
+}
+
+softConfig* consoleInput() {
+    // ввод количества структур
+    printf("Please, enter the number of apps you want to add configs about:\n");
+    int num_of_elements = -1;
+    scanf("%d", &num_of_elements);
+    assert(num_of_elements > 0);
+
+    softConfig* configs = (softConfig*) calloc(num_of_elements, sizeof(softConfig));
+    for (int i = 0; i < num_of_elements; i++) {
+        printf("Enter information about app #%d:\n", i+1);
+        printf("Enter name:\n");
+        size_t linecap = 0;
+
+        // TODO: убрать костыль
+        if (i == 0) getline(&configs[i].name, &linecap, stdin);
+        getline(&configs[i].name, &linecap, stdin);
+
+        while (!configs[i].functionalClass || configs[i].functionalClass[0] <= 65 || configs[i].functionalClass[0] >= 90) {
+            printf("Enter functional class of the app. Please, start with upper-case letter:\n");
+            getline(&configs[i].functionalClass, &linecap, stdin);
+        }
+
+        char *version_number_str = NULL;
+        while (!configs[i].versionNumber || configs[i].versionNumber <= 0) {
+            printf("Enter version number (9 digits or less): ");
+            getline(&version_number_str, &linecap, stdin);
+            configs[i].versionNumber = atoi(version_number_str);
+        }
+
+        printf("Enter app installation date:\n");
+        input_date(&configs[i].installDate);
+
+        printf("Enter app last update date:\n");
+        input_date(&configs[i].lastUpdateDate);
+    }
+
+    return configs;
+}
+
+
+void setHardData(softConfig* configs) {
     softConfig a = { "Word",
         "Utilities",
         1293,
@@ -105,7 +153,6 @@ int isUnupdated(date first, date second) {
 
 softConfig** dateSort(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
-    printf("%d %d\n", halfYear.year, halfYear.month);
 
     softConfig** sortedConfigs = calloc(HARD_DATA_SIZE, sizeof(softConfig*));
 
@@ -158,17 +205,16 @@ softConfig*** groupSort(softConfig** configs) {
         }
         if (!isInTheNames) {
             classNames[funcClassCount] = configs[i]->functionalClass;
-            printf("%s\n", classNames[funcClassCount]);
             funcClassCount++;
         }
         i++;
     }
 
     // выделить массив под каждый из них
-    softConfig*** configGroups = calloc(funcClassCount, sizeof(softConfig**)); // ***?
+    softConfig*** configGroups = calloc(funcClassCount, sizeof(softConfig**));
     for (i = 0; i < funcClassCount; i++) {
         // count each group to optimize memory
-        configGroups[i] = calloc(HARD_DATA_SIZE, sizeof(softConfig*)); // !
+        configGroups[i] = calloc(HARD_DATA_SIZE, sizeof(softConfig*));
     }
 
     // добавить элементы в соответствующие группы
@@ -180,7 +226,7 @@ softConfig*** groupSort(softConfig** configs) {
             if (strcmp(classNames[j], configs[i]->functionalClass) == 0) {
                 configGroups[j][groupElemCounter[j]] = configs[i];
                 groupElemCounter[j]++;
-                printf("Element %s added in the group %s\n", configs[i]->name, classNames[j]);
+                // printf("Element %s added in the group %s\n", configs[i]->name, classNames[j]);
             }
         }
         i++;
@@ -203,22 +249,33 @@ int isEmpty(softConfig** configs) {
 }
 
 
-void print(softConfig** configs) {
+void groupPrint(softConfig*** configs) {
     int i = 0;
     while(configs[i]) {
-        printf("%s      %d %d\n", configs[i]->name, configs[i]->installDate.year, configs[i]->installDate.month);
+        printf("%s:\n", configs[i][0]->functionalClass);
+        int j = 0;
+        while (configs[i][j]) {
+            printf("-- %s  (install date: %d.%d.%d)\n", configs[i][j]->name, configs[i][j]->installDate.day, configs[i][j]->installDate.month, configs[i][j]->installDate.year);
+            j++;
+        }
+        printf("\n");
         i++;
     }
 }
 
+// TODO: написать функцию освобождения памяти для структур
+// TODO: распределить функции по файлам
 
 
 int main() {
-    softConfig* configs = malloc(HARD_DATA_SIZE * sizeof(softConfig));
-    hardData(configs);
+    softConfig* configs = calloc(HARD_DATA_SIZE, sizeof(softConfig));
+    setHardData(configs);
 
-    softConfig** sortedConfigs = dateSort(configs);
-    softConfig*** sortedConfigsss = groupSort(sortedConfigs);
-    print(sortedConfigsss[1]);
+    softConfig*** sortedConfigs = groupSort(dateSort(configs));
+
+    // softConfig*** sortedConfigs = groupSort(dateSort(consoleInput()));
+
+    groupPrint(sortedConfigs);
+
     return 0;
 }

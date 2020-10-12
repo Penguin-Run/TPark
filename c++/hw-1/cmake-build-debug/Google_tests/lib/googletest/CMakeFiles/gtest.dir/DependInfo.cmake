@@ -4,12 +4,14 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/Ivan/TPark/c++/hw-1/Google_tests/lib/googletest/src/gtest-all.cc" "/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/Google_tests/lib/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o"
+  "/Users/penguin/TPark/c++/hw-1/Google_tests/lib/googletest/src/gtest-all.cc" "/Users/penguin/TPark/c++/hw-1/cmake-build-debug/Google_tests/lib/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../source_lib"
+  "../include"
   "../Google_tests/lib/googletest/include"
   "../Google_tests/lib/googletest"
   )

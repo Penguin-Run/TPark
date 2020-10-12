@@ -6,21 +6,21 @@
 
 #IncludeRegexTransform: 
 
-/Users/Ivan/TPark/c++/hw-1/source_lib/soft_config.h
+/Users/penguin/TPark/c++/hw-1/source_lib/soft_config.h
 stdio.h
 -
 time.h
 -
 
-/Users/Ivan/TPark/c++/hw-1/source_lib/source.c
+/Users/penguin/TPark/c++/hw-1/source_lib/source.c
 stdio.h
 -
 stdlib.h
 -
 soft_config.h
-/Users/Ivan/TPark/c++/hw-1/source_lib/soft_config.h
+/Users/penguin/TPark/c++/hw-1/source_lib/soft_config.h
 string.h
-/Users/Ivan/TPark/c++/hw-1/source_lib/string.h
+/Users/penguin/TPark/c++/hw-1/source_lib/string.h
 assert.h
-/Users/Ivan/TPark/c++/hw-1/source_lib/assert.h
+/Users/penguin/TPark/c++/hw-1/source_lib/assert.h
 

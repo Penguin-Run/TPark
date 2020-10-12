@@ -9,5 +9,6 @@ add_executable(source_run ${SOURCE_FILES})
 
 include_directories(source_lib)
 add_subdirectory(source_lib)
-
+include_directories(include)
 target_link_libraries(source_run source_lib)
+add_subdirectory(Google_tests)

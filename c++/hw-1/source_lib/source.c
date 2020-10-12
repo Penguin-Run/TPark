@@ -157,7 +157,7 @@ int isUnupdated(date first, date second) {
 softConfig** dateSort(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
 
-    softConfig** sortedConfigs = calloc(HARD_DATA_SIZE, sizeof(softConfig*));
+    softConfig** sortedConfigs = (softConfig**) calloc(HARD_DATA_SIZE, sizeof(softConfig*));
 
     int sortCount = 0;
     for (int i = 0; i < HARD_DATA_SIZE; i++) {
@@ -214,10 +214,10 @@ softConfig*** groupSort(softConfig** configs) {
     }
 
     // выделить массив под каждый из них
-    softConfig*** configGroups = calloc(funcClassCount, sizeof(softConfig**));
+    softConfig*** configGroups = (softConfig***) calloc(funcClassCount, sizeof(softConfig**));
     for (i = 0; i < funcClassCount; i++) {
         // count each group to optimize memory
-        configGroups[i] = calloc(HARD_DATA_SIZE, sizeof(softConfig*));
+        configGroups[i] = (softConfig**) calloc(HARD_DATA_SIZE, sizeof(softConfig*));
     }
 
     // добавить элементы в соответствующие группы

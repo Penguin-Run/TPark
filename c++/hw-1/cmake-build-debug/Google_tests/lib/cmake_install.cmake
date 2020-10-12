@@ -1,4 +1,4 @@
-# Install script for directory: /Users/Ivan/TPark/c++/hw-1/Google_tests/lib
+# Install script for directory: /Users/penguin/TPark/c++/hw-1/Google_tests/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/Google_tests/lib/googlemock/cmake_install.cmake")
+  include("/Users/penguin/TPark/c++/hw-1/cmake-build-debug/Google_tests/lib/googlemock/cmake_install.cmake")
 
 endif()
 

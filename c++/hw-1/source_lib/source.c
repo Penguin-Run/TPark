@@ -4,8 +4,8 @@
 #include "string.h"
 #include "assert.h"
 
-// TODO: написать функцию освобождения памяти для структур
 // TODO: распределить функции по файлам
+// TODO: убрать HARD_DATA_SIZE из работы всех функций !
 
 #define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
@@ -82,7 +82,7 @@ void setHardData(softConfig* configs) {
                      "Utilities",
                      1293,
                      {21, 6, 2019},
-                     {17, 3, 2020}
+                     {21, 6, 2019}
     };
     configs[0] = a;
 
@@ -197,7 +197,7 @@ softConfig*** groupSort(softConfig** configs) {
         classNames[i] = "";
     }
     int i = 0;
-    while (configs[i]) {
+    while (configs[i] != NULL) {
         int isInTheNames = 0;
         for (int j = 0; j < HARD_DATA_SIZE; j++) {
             if ((configs[i]->functionalClass != NULL) && (classNames[j] != NULL)) {
@@ -262,6 +262,14 @@ void groupPrint(softConfig*** configs) {
             j++;
         }
         printf("\n");
+        i++;
+    }
+}
+
+void free_groups(softConfig*** configs) {
+    int i = 0;
+    while (configs[i]) {
+        free(configs[i]);
         i++;
     }
 }

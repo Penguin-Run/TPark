@@ -1,13 +1,5 @@
 #include "source.c"
 
-void free_groups(softConfig*** configs) {
-    int i = 0;
-    while (configs[i]) {
-        free(configs[i]);
-        i++;
-    }
-}
-
 int main() {
 
     softConfig* configs = calloc(HARD_DATA_SIZE, sizeof(softConfig));

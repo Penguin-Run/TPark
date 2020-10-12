@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libsource_lib.a  CMakeFiles/source_lib.dir/source.c.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libsource_lib.a

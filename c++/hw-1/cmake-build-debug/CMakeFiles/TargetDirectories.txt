@@ -1,0 +1,6 @@
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/CMakeFiles/source_run.dir
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/source_lib/CMakeFiles/rebuild_cache.dir
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/source_lib/CMakeFiles/edit_cache.dir
+/Users/Ivan/TPark/c++/hw-1/cmake-build-debug/source_lib/CMakeFiles/source_lib.dir

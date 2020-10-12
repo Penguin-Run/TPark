@@ -92,7 +92,7 @@ void setHardData(softConfig* configs) {
     configs[1] = b;
 
     softConfig c = { "Clion",
-                     "DevTools",
+                     "Utilities",
                      3764,
                      {12, 1, 2020},
                      {12, 1, 2020}
@@ -151,6 +151,7 @@ int isUnupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
+// TODO: заменить HARD_DATA_SIZE
 softConfig** dateSort(softConfig* configs) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
 
@@ -232,6 +233,9 @@ softConfig*** groupSort(softConfig** configs) {
         i++;
     }
 
+    // очищаем память выделенную под массив указателей configs
+    free(configs);
+
     // отсортировать элементы по алфавиту в рамках групп
     for (i = 0; i < funcClassCount; i++) ascendingSort(configGroups[i]);
     return configGroups;
@@ -263,9 +267,15 @@ void groupPrint(softConfig*** configs) {
     }
 }
 
-// TODO: написать функцию освобождения памяти для структур
 // TODO: распределить функции по файлам
 
+void free_groups(softConfig*** configs) {
+    int i = 0;
+    while (configs[i]) {
+        free(configs[i]);
+        i++;
+    }
+}
 
 int main() {
     softConfig* configs = calloc(HARD_DATA_SIZE, sizeof(softConfig));
@@ -277,5 +287,7 @@ int main() {
 
     groupPrint(sortedConfigs);
 
+    free(configs);
+    free_groups(sortedConfigs);
     return 0;
 }

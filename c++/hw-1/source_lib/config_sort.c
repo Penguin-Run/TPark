@@ -4,9 +4,6 @@
 #include "string.h"
 #include "assert.h"
 
-// TODO: распределить функции по файлам
-
-#define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
 
 // returns current date - deltaAgo (deltaAgo in seconds)

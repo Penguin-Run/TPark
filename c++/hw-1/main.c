@@ -1,4 +1,5 @@
-#include "source.c"
+#include "config_sort.h"
+#include "io_manager.h"
 
 /*
  Для более наглядного выделения памяти все функции работают с указателями на уже выделенную память.
@@ -24,7 +25,7 @@ int main() {
     for (int i = 0; i < num_of_groups; i++) {
         config_groups_ptrs[i] = (softConfig**) calloc(*num_of_elements, sizeof(softConfig*));
     }
-    groupSort(configs_ptrs, config_groups_ptrs, classNames, num_of_groups, *num_of_elements);
+    groupSort(configs_ptrs, config_groups_ptrs, classNames, num_of_groups);
 
     // сортировка по алфавиту в рамках групп
     alphabetical_sort(config_groups_ptrs);

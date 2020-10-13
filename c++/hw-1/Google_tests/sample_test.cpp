@@ -1,6 +1,7 @@
 #include "lib/googletest/include/gtest/gtest.h"
 extern "C" {
-#include "../source_lib/source.c"
+#include "config_sort.h"
+#include "io_manager.h"
 }
 
 
@@ -89,7 +90,7 @@ TEST(sort_test, group_sort) {
     for (int i = 0; i < num_of_groups; i++) {
         sorted[i] = (softConfig**) calloc(TEST_DATA_SIZE, sizeof(softConfig*));
     }
-    groupSort(configs_ptr, sorted, classNames, num_of_groups, TEST_DATA_SIZE);
+    groupSort(configs_ptr, sorted, classNames, num_of_groups);
 
 
     // тесты

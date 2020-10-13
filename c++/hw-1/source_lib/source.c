@@ -5,7 +5,6 @@
 #include "assert.h"
 
 // TODO: распределить функции по файлам
-// TODO: найти все маллоки и корректно чистить память
 
 #define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
@@ -189,45 +188,40 @@ softConfig** ascendingSort(softConfig** configs) {
     return configs;
 }
 
-
-
-softConfig*** groupSort(softConfig** configs, int num_of_elements) {
+int find_group_names(softConfig** configs, char** group_names, int num_of_elements) {
     // найти все названия функц. классов
     int funcClassCount = 0;
-    char* classNames[num_of_elements];
+
     for (int i = 0; i < num_of_elements; i++) {
-        classNames[i] = "";
+        group_names[i] = "";
     }
     int i = 0;
     while (configs[i] != NULL) {
         int isInTheNames = 0;
         for (int j = 0; j < num_of_elements; j++) {
-            if ((configs[i]->functionalClass != NULL) && (classNames[j] != NULL)) {
-                if (strcmp(configs[i]->functionalClass, classNames[j]) == 0) {
+            if ((configs[i]->functionalClass != NULL) && (group_names[j] != NULL)) {
+                if (strcmp(configs[i]->functionalClass, group_names[j]) == 0) {
                     isInTheNames = 1;
                 }
             }
         }
         if (!isInTheNames) {
-            classNames[funcClassCount] = configs[i]->functionalClass;
+            group_names[funcClassCount] = configs[i]->functionalClass;
             funcClassCount++;
         }
         i++;
     }
+    return funcClassCount;
+}
 
-    // выделить массив под каждый из них
-    softConfig*** configGroups = (softConfig***) calloc(funcClassCount, sizeof(softConfig**));
-    for (i = 0; i < funcClassCount; i++) {
-        configGroups[i] = (softConfig**) calloc(num_of_elements, sizeof(softConfig*));
-    }
-
+softConfig*** groupSort(softConfig** configs, softConfig*** configGroups, char** group_names, int num_of_groups, int num_of_elements) {
     // добавить элементы в соответствующие группы
-    int groupElemCounter[funcClassCount];
-    for (i = 0; i < funcClassCount; i++) groupElemCounter[i] = 0;
-    i = 0;
+    int groupElemCounter[num_of_groups];
+    for (int i = 0; i < num_of_groups; i++) groupElemCounter[i] = 0;
+    int i = 0;
     while(configs[i]) {
-        for (int j = 0; j < funcClassCount; j++) {
-            if (strcmp(classNames[j], configs[i]->functionalClass) == 0) {
+        for (int j = 0; j < num_of_groups; j++) {
+            if (strcmp(group_names[j], configs[i]->functionalClass) == 0) {
                 configGroups[j][groupElemCounter[j]] = configs[i];
                 groupElemCounter[j]++;
                 // printf("Element %s added in the group %s\n", configs[i]->name, classNames[j]);
@@ -246,18 +240,6 @@ void alphabetical_sort(softConfig*** config_groups) {
     }
 }
 
-// check if array of pointers is empty
-int isEmpty(softConfig** configs) {
-    int i = 0;
-    while(i < HARD_DATA_SIZE) {
-        if (configs[i])
-            return 0; // not empty
-        i++;
-    }
-    return 1; // empty
-}
-
-
 void groupPrint(softConfig*** configs) {
     int i = 0;
     while(configs[i]) {
@@ -270,13 +252,4 @@ void groupPrint(softConfig*** configs) {
         printf("\n");
         i++;
     }
-}
-
-void free_groups(softConfig*** configs) {
-    int i = 0;
-    while (configs[i]) {
-        free(configs[i]);
-        i++;
-    }
-    free(configs);
 }

@@ -5,7 +5,7 @@
 #include "assert.h"
 
 // TODO: распределить функции по файлам
-// TODO: убрать HARD_DATA_SIZE из работы всех функций !
+// TODO: найти все маллоки и корректно чистить память
 
 #define HARD_DATA_SIZE 5
 #define HALF_YEAR_IN_SECONDS 15768000
@@ -37,15 +37,15 @@ void input_date(date* date) {
     printf("\n");
 }
 
-softConfig* consoleInput() {
+softConfig* consoleInput(int* number_of_elements) {
     // ввод количества структур
     printf("Please, enter the number of apps you want to add configs about:\n");
-    int num_of_elements = -1;
-    scanf("%d", &num_of_elements);
-    assert(num_of_elements > 0);
+    // int num_of_elements = -1;
+    scanf("%d", number_of_elements);
+    assert(*number_of_elements > 0);
 
-    softConfig* configs = (softConfig*) calloc(num_of_elements, sizeof(softConfig));
-    for (int i = 0; i < num_of_elements; i++) {
+    softConfig* configs = (softConfig*) calloc(*number_of_elements, sizeof(softConfig));
+    for (int i = 0; i < *number_of_elements; i++) {
         printf("Enter information about app #%d:\n", i+1);
         printf("Enter name:\n");
         size_t linecap = 0;
@@ -77,7 +77,9 @@ softConfig* consoleInput() {
 }
 
 
-void setHardData(softConfig* configs) {
+softConfig* setHardData(int* number_of_elements) {
+    *number_of_elements = HARD_DATA_SIZE;
+    softConfig* configs = calloc(*number_of_elements, sizeof(softConfig));
     softConfig a = { "Word",
                      "Utilities",
                      1293,
@@ -117,6 +119,7 @@ void setHardData(softConfig* configs) {
                      {12, 1, 2020}
     };
     configs[4] = e;
+    return configs;
 }
 
 // returns current date - deltaAgo (deltaAgo in seconds)
@@ -154,13 +157,13 @@ int isUnupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
-softConfig** dateSort(softConfig* configs) {
+softConfig** dateSort(softConfig* configs, int num_of_elements) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
 
-    softConfig** sortedConfigs = (softConfig**) calloc(HARD_DATA_SIZE, sizeof(softConfig*));
+    softConfig** sortedConfigs = (softConfig**) calloc(num_of_elements, sizeof(softConfig*));
 
     int sortCount = 0;
-    for (int i = 0; i < HARD_DATA_SIZE; i++) {
+    for (int i = 0; i < num_of_elements; i++) {
         if (datecmp(configs[i].installDate, halfYear) == 2 && isUnupdated(configs[i].installDate, configs[i].lastUpdateDate)) {
             sortedConfigs[sortCount] = &configs[i];
             sortCount++;
@@ -189,17 +192,17 @@ softConfig** ascendingSort(softConfig** configs) {
     return configs;
 }
 
-softConfig*** groupSort(softConfig** configs) {
+softConfig*** groupSort(softConfig** configs, int num_of_elements) {
     // найти все названия функц. классов
     int funcClassCount = 0;
-    char* classNames[HARD_DATA_SIZE];
-    for (int i = 0; i < HARD_DATA_SIZE; i++) {
+    char* classNames[num_of_elements];
+    for (int i = 0; i < num_of_elements; i++) {
         classNames[i] = "";
     }
     int i = 0;
     while (configs[i] != NULL) {
         int isInTheNames = 0;
-        for (int j = 0; j < HARD_DATA_SIZE; j++) {
+        for (int j = 0; j < num_of_elements; j++) {
             if ((configs[i]->functionalClass != NULL) && (classNames[j] != NULL)) {
                 if (strcmp(configs[i]->functionalClass, classNames[j]) == 0) {
                     isInTheNames = 1;
@@ -216,8 +219,7 @@ softConfig*** groupSort(softConfig** configs) {
     // выделить массив под каждый из них
     softConfig*** configGroups = (softConfig***) calloc(funcClassCount, sizeof(softConfig**));
     for (i = 0; i < funcClassCount; i++) {
-        // count each group to optimize memory
-        configGroups[i] = (softConfig**) calloc(HARD_DATA_SIZE, sizeof(softConfig*));
+        configGroups[i] = (softConfig**) calloc(num_of_elements, sizeof(softConfig*));
     }
 
     // добавить элементы в соответствующие группы

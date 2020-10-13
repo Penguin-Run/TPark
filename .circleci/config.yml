@@ -24,17 +24,17 @@ jobs:
           command: 'apt-get update && apt-get install -y gcovr'
       - run:
           name: Creating Build Files
-          command: 'mkdir iz-1/build && cd iz-1/build && 
+          command: 'mkdir c++/hw-1/build && cd c++/hw-1/build && 
                     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage -G "CodeBlocks - Unix Makefiles" .. && ls -la'
       - run:
           name: Creating Binary Files
-          command: 'cmake --build iz-1/build --target Google_Tests_run -- -j 6 && ls -la'
+          command: 'cmake --build c++/hw-1/build --target Google_Tests_run -- -j 6 && ls -la'
       - run:
           name: Start CppCheck
-          command: 'ls -la && cd iz-1 && ls -la && cppcheck src/* include/* Google_tests/AbsoluteDateTest'
+          command: 'ls -la && cd c++/hw-1 && ls -la && cppcheck source_lib/*  Google_tests/sample_test'
       - run:
           name: Start Tests With Valgrind
-          command: 'valgrind iz-1/build/Google_tests/Google_Tests_run'
+          command: 'valgrind c++/hw-1/build/Google_tests/Google_Tests_run'
       - run:
           name: Gcovr
-          command: 'cd iz-1 && gcovr -r .'
+          command: 'cd c++/hw-1 && gcovr -r .'

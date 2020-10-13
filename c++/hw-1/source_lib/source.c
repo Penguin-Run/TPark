@@ -234,10 +234,15 @@ softConfig*** groupSort(softConfig** configs) {
         }
         i++;
     }
-
-    // отсортировать элементы по алфавиту в рамках групп
-    for (i = 0; i < funcClassCount; i++) ascendingSort(configGroups[i]);
     return configGroups;
+}
+
+void alphabetical_sort(softConfig*** config_groups) {
+    int i = 0;
+    while (config_groups[i]) {
+        ascendingSort(config_groups[i]);
+        i++;
+    }
 }
 
 // check if array of pointers is empty

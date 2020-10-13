@@ -37,6 +37,7 @@ void input_date(date* date) {
     printf("\n");
 }
 
+// allocate memory!
 softConfig* consoleInput(int* number_of_elements) {
     // ввод количества структур
     printf("Please, enter the number of apps you want to add configs about:\n");
@@ -76,10 +77,10 @@ softConfig* consoleInput(int* number_of_elements) {
     return configs;
 }
 
-
+// allocate memory!
 softConfig* setHardData(int* number_of_elements) {
     *number_of_elements = HARD_DATA_SIZE;
-    softConfig* configs = calloc(*number_of_elements, sizeof(softConfig));
+    softConfig* configs = (softConfig*) calloc(*number_of_elements, sizeof(softConfig));
     softConfig a = { "Word",
                      "Utilities",
                      1293,
@@ -157,10 +158,8 @@ int isUnupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
-softConfig** dateSort(softConfig* configs, int num_of_elements) {
+void dateSort(softConfig* configs, softConfig** sortedConfigs, int num_of_elements) {
     date halfYear = getDate(HALF_YEAR_IN_SECONDS);
-
-    softConfig** sortedConfigs = (softConfig**) calloc(num_of_elements, sizeof(softConfig*));
 
     int sortCount = 0;
     for (int i = 0; i < num_of_elements; i++) {
@@ -169,8 +168,6 @@ softConfig** dateSort(softConfig* configs, int num_of_elements) {
             sortCount++;
         }
     }
-
-    return sortedConfigs;
 }
 
 softConfig** ascendingSort(softConfig** configs) {
@@ -191,6 +188,8 @@ softConfig** ascendingSort(softConfig** configs) {
 
     return configs;
 }
+
+
 
 softConfig*** groupSort(softConfig** configs, int num_of_elements) {
     // найти все названия функц. классов
@@ -279,4 +278,5 @@ void free_groups(softConfig*** configs) {
         free(configs[i]);
         i++;
     }
+    free(configs);
 }

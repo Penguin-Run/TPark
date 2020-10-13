@@ -1,15 +1,19 @@
 #include "source.c"
 
 int main() {
-    int *num_of_elements;
+    // ввод данных
+    int* num_of_elements;
     softConfig* configs = setHardData(num_of_elements);
+    assert(*num_of_elements > 0);
 
-    softConfig** configs_ptrs = dateSort(configs, *num_of_elements);
+    // сортировка по датам
+    softConfig** configs_ptrs = (softConfig**) calloc(*num_of_elements, sizeof(softConfig*));
+    dateSort(configs, configs_ptrs, *num_of_elements);
+
+    
     softConfig*** config_groups_ptrs = groupSort(configs_ptrs, *num_of_elements);
-    alphabetical_sort(config_groups_ptrs);
 
-    // softConfig*** sortedConfigs = groupSort(dateSort(consoleInput()));
-    // alphabetical_sort(sortedConfigs);
+    alphabetical_sort(config_groups_ptrs);
 
     groupPrint(config_groups_ptrs);
 

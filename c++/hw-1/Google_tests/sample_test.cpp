@@ -48,7 +48,7 @@ TEST(sort_test, date_sort) {
     };
     configs[3].lastUpdateDate = configs[3].installDate;
 
-    softConfig** sorted = dateSort(configs);
+    softConfig** sorted = dateSort(configs, TEST_DATA_SIZE);
 
     // should sort only 0 and 3 config
     ASSERT_EQ(sorted[0]->versionNumber, configs[0].versionNumber);
@@ -73,7 +73,7 @@ TEST(sort_test, group_sort) {
     for (int i = 0; i < TEST_DATA_SIZE; i++) configs_ptr[i] = &configs[i];
     configs_ptr[TEST_DATA_SIZE] = nullptr;
 
-    softConfig*** sorted = groupSort(configs_ptr);
+    softConfig*** sorted = groupSort(configs_ptr, TEST_DATA_SIZE);
 
     ASSERT_EQ(sorted[0][0]->versionNumber, configs[0].versionNumber); // Utilities 101
     ASSERT_EQ(sorted[0][1]->versionNumber, configs[3].versionNumber); // Utilities 104

@@ -1,7 +1,10 @@
 #include "io_manager.h"
 
-void input_date(date* date) {
-    assert(date);
+int input_date(date* date) {
+    if (!date) {
+        printf("ERROR: memory alloc error\n");
+        return -1;
+    }
     char *str = NULL;
     while (!date->day || date->day > 31 || date->day < 1) {
         printf("Enter day in range 1..31: ");
@@ -26,6 +29,7 @@ void input_date(date* date) {
         date->year = atoi(str);
     }
     printf("\n");
+    return 0;
 }
 
 // allocate memory!
@@ -34,10 +38,16 @@ soft_config* console_input(int* number_of_elements) {
     printf("Please, enter the number of apps you want to add configs about:\n");
     // int num_of_elements = -1;
     scanf("%d", number_of_elements);
-    assert(*number_of_elements > 0);
+    if (*number_of_elements <= 0) {
+        printf("ERROR: invalid number of elements\n");
+        return NULL;
+    }
 
     soft_config* configs = (soft_config*) calloc(*number_of_elements, sizeof(soft_config));
-    assert(configs);
+    if (!configs) {
+        printf("ERROR: memory alloc error\n");
+        return NULL;
+    }
     for (int i = 0; i < *number_of_elements; i++) {
         printf("Enter information about app #%d:\n", i+1);
         printf("Enter name:\n");
@@ -72,7 +82,10 @@ soft_config* console_input(int* number_of_elements) {
 soft_config* set_hard_data(int* number_of_elements) {
     *number_of_elements = HARD_DATA_SIZE;
     soft_config* configs = (soft_config*) calloc(*number_of_elements, sizeof(soft_config));
-    assert(configs);
+    if (!configs) {
+        printf("ERROR: memory alloc error\n");
+        return NULL;
+    }
     soft_config a = {"Word",
                      "Utilities",
                      1293,
@@ -115,19 +128,29 @@ soft_config* set_hard_data(int* number_of_elements) {
     return configs;
 }
 
-void group_print(soft_config*** configs) {
-    assert(configs);
+int group_print(soft_config*** configs) {
+    if (!configs) {
+        printf("ERROR: NULL *** pointer passed\n");
+        return -1;
+    }
     int i = 0;
     while(configs[i]) {
-        assert(configs[i]);
+        if (!configs[i]) {
+            printf("ERROR: NULL ** pointer passed\n");
+            return -1;
+        }
         printf("%s:\n", configs[i][0]->functional_class);
         int j = 0;
         while (configs[i][j]) {
-            assert(configs[i][j]);
+            if (!configs[i][j]) {
+                printf("ERROR: NULL * pointer passed\n");
+                return -1;
+            }
             printf("-- %s  (install date: %d.%d.%d)\n", configs[i][j]->name, configs[i][j]->install_date.day, configs[i][j]->install_date.month, configs[i][j]->install_date.year);
             j++;
         }
         printf("\n");
         i++;
     }
+    return 0;
 }

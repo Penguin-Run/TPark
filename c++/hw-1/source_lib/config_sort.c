@@ -41,9 +41,15 @@ int is_unupdated(date first, date second) {
     return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day));
 }
 
-void date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_elements) {
-    assert(configs);
-    assert(sortedConfigs);
+int date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_elements) {
+    if (!configs) {
+        printf("ERROR: NULL * pointer passed\n");
+        return -1;
+    }
+    if (!sortedConfigs) {
+        printf("ERROR: NULL ** pointer passed\n");
+        return -1;
+    }
 
     date halfYear = get_date(HALF_YEAR_IN_SECONDS);
 
@@ -57,8 +63,11 @@ void date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_ele
     }
 }
 
-soft_config** ascending_sort(soft_config** configs) {
-    assert(configs);
+int ascending_sort(soft_config** configs) {
+    if (!configs) {
+        printf("ERROR: NULL ** pointer passed\n");
+        return -1;
+    }
     int isSorted = 1;
     while(isSorted) {
         isSorted = 0;
@@ -74,13 +83,15 @@ soft_config** ascending_sort(soft_config** configs) {
         }
     }
 
-    return configs;
+    return 0;
 }
 
 int find_group_names(soft_config** configs, char** group_names, int num_of_elements) {
     // найти все названия функциональных классов
-    assert(configs);
-    assert(group_names);
+    if (!configs || !group_names) {
+        printf("ERROR: NULL ** pointer passed\n");
+        return -1;
+    }
 
     int funcClassCount = 0;
 
@@ -106,36 +117,43 @@ int find_group_names(soft_config** configs, char** group_names, int num_of_eleme
     return funcClassCount;
 }
 
-soft_config*** group_sort(soft_config** configs, soft_config*** configGroups, char** group_names, int num_of_groups) {
-    // добавить элементы в соответствующие группы
-    assert(configs);
-    assert(configGroups);
-    assert(group_names);
+int group_sort(soft_config** configs, soft_config*** configGroups, char** group_names, int num_of_groups) {
+    // функция для добавления элементов в соответствующие группы
+    if (!configs || !configGroups || !group_names) {
+        printf("ERROR: NULL pointer passed\n");
+        return -1;
+    }
 
     int groupElemCounter[num_of_groups];
     for (int i = 0; i < num_of_groups; i++) groupElemCounter[i] = 0;
     int i = 0;
     while(configs[i]) {
         for (int j = 0; j < num_of_groups; j++) {
-            assert(configGroups[j]);
+            if (!configGroups[j]) {
+                printf("ERROR: NULL pointer passed\n");
+                return -1;
+            }
             if (strcmp(group_names[j], configs[i]->functional_class) == 0) {
                 configGroups[j][groupElemCounter[j]] = configs[i];
                 groupElemCounter[j]++;
-                // printf("Element %s added in the group %s\n", configs[i]->name, classNames[j]);
             }
         }
         i++;
     }
-    return configGroups;
+    return 0;
 }
 
-void alphabetical_sort(soft_config*** config_groups) {
-    assert(config_groups);
+int alphabetical_sort(soft_config*** config_groups) {
+    if (!config_groups) {
+        printf("ERROR: NULL pointer passed\n");
+        return -1;
+    }
     int i = 0;
     while (config_groups[i]) {
-        ascending_sort(config_groups[i]);
+        if (ascending_sort(config_groups[i]) == -1) return -1;
         i++;
     }
+    return 0;
 }
 
 

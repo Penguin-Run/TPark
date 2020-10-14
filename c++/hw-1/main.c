@@ -7,15 +7,14 @@
  */
 
 // TODO: убрать с репо .idea папку
-// TODO: переименовать все функции под один стиль
-// TODO: сделать проверку указателей на входе функций и при выделении памяти
-// TODO: поставить сззсрусл и исправить код по нему
+// TODO: поставить cppcheck и исправить код по нему
 // TODO: сделать новый ПР чтобы уже было покрытие
 
 int main() {
     // ввод данных
     int* num_of_elements;
     soft_config* configs = set_hard_data(num_of_elements);
+    assert(configs);
     /*
      Ввод через консоль:
      soft_config* configs = console_input(num_of_elements);
@@ -24,16 +23,20 @@ int main() {
 
     // сортировка по датам
     soft_config** configs_ptrs = (soft_config**) calloc(*num_of_elements, sizeof(soft_config*));
+    assert(configs_ptrs);
     date_sort(configs, configs_ptrs, *num_of_elements);
 
     // определение групп по именам функциональных классов
     char** classNames = (char**) calloc(*num_of_elements, sizeof(char*));
+    assert(classNames);
     int num_of_groups = find_group_names(configs_ptrs, classNames, *num_of_elements);
 
     // сортировка по группам
     soft_config*** config_groups_ptrs = (soft_config***) calloc(num_of_groups, sizeof(soft_config**));
+    assert(config_groups_ptrs);
     for (int i = 0; i < num_of_groups; i++) {
         config_groups_ptrs[i] = (soft_config**) calloc(*num_of_elements, sizeof(soft_config*));
+        assert(config_groups_ptrs[i]);
     }
     group_sort(configs_ptrs, config_groups_ptrs, classNames, num_of_groups);
 

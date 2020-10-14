@@ -42,6 +42,9 @@ int is_unupdated(date first, date second) {
 }
 
 void date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_elements) {
+    assert(configs);
+    assert(sortedConfigs);
+
     date halfYear = get_date(HALF_YEAR_IN_SECONDS);
 
     int sortCount = 0;
@@ -55,6 +58,7 @@ void date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_ele
 }
 
 soft_config** ascending_sort(soft_config** configs) {
+    assert(configs);
     int isSorted = 1;
     while(isSorted) {
         isSorted = 0;
@@ -74,7 +78,10 @@ soft_config** ascending_sort(soft_config** configs) {
 }
 
 int find_group_names(soft_config** configs, char** group_names, int num_of_elements) {
-    // найти все названия функц. классов
+    // найти все названия функциональных классов
+    assert(configs);
+    assert(group_names);
+
     int funcClassCount = 0;
 
     for (int i = 0; i < num_of_elements; i++) {
@@ -101,11 +108,16 @@ int find_group_names(soft_config** configs, char** group_names, int num_of_eleme
 
 soft_config*** group_sort(soft_config** configs, soft_config*** configGroups, char** group_names, int num_of_groups) {
     // добавить элементы в соответствующие группы
+    assert(configs);
+    assert(configGroups);
+    assert(group_names);
+
     int groupElemCounter[num_of_groups];
     for (int i = 0; i < num_of_groups; i++) groupElemCounter[i] = 0;
     int i = 0;
     while(configs[i]) {
         for (int j = 0; j < num_of_groups; j++) {
+            assert(configGroups[j]);
             if (strcmp(group_names[j], configs[i]->functional_class) == 0) {
                 configGroups[j][groupElemCounter[j]] = configs[i];
                 groupElemCounter[j]++;
@@ -118,6 +130,7 @@ soft_config*** group_sort(soft_config** configs, soft_config*** configGroups, ch
 }
 
 void alphabetical_sort(soft_config*** config_groups) {
+    assert(config_groups);
     int i = 0;
     while (config_groups[i]) {
         ascending_sort(config_groups[i]);

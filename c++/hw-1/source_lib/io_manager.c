@@ -28,14 +28,14 @@ void input_date(date* date) {
 }
 
 // allocate memory!
-softConfig* consoleInput(int* number_of_elements) {
+soft_config* console_input(int* number_of_elements) {
     // ввод количества структур
     printf("Please, enter the number of apps you want to add configs about:\n");
     // int num_of_elements = -1;
     scanf("%d", number_of_elements);
     assert(*number_of_elements > 0);
 
-    softConfig* configs = (softConfig*) calloc(*number_of_elements, sizeof(softConfig));
+    soft_config* configs = (soft_config*) calloc(*number_of_elements, sizeof(soft_config));
     for (int i = 0; i < *number_of_elements; i++) {
         printf("Enter information about app #%d:\n", i+1);
         printf("Enter name:\n");
@@ -45,33 +45,33 @@ softConfig* consoleInput(int* number_of_elements) {
         if (i == 0) getline(&configs[i].name, &linecap, stdin);
         getline(&configs[i].name, &linecap, stdin);
 
-        while (!configs[i].functionalClass || configs[i].functionalClass[0] <= 65 || configs[i].functionalClass[0] >= 90) {
+        while (!configs[i].functional_class || configs[i].functional_class[0] <= 65 || configs[i].functional_class[0] >= 90) {
             printf("Enter functional class of the app. Please, start with upper-case letter:\n");
-            getline(&configs[i].functionalClass, &linecap, stdin);
+            getline(&configs[i].functional_class, &linecap, stdin);
         }
 
         char *version_number_str = NULL;
-        while (!configs[i].versionNumber || configs[i].versionNumber <= 0) {
+        while (!configs[i].version_number || configs[i].version_number <= 0) {
             printf("Enter version number (9 digits or less): ");
             getline(&version_number_str, &linecap, stdin);
-            configs[i].versionNumber = atoi(version_number_str);
+            configs[i].version_number = atoi(version_number_str);
         }
 
         printf("Enter app installation date:\n");
-        input_date(&configs[i].installDate);
+        input_date(&configs[i].install_date);
 
         printf("Enter app last update date:\n");
-        input_date(&configs[i].lastUpdateDate);
+        input_date(&configs[i].last_update_date);
     }
 
     return configs;
 }
 
 // allocate memory!
-softConfig* setHardData(int* number_of_elements) {
+soft_config* set_hard_data(int* number_of_elements) {
     *number_of_elements = HARD_DATA_SIZE;
-    softConfig* configs = (softConfig*) calloc(*number_of_elements, sizeof(softConfig));
-    softConfig a = { "Word",
+    soft_config* configs = (soft_config*) calloc(*number_of_elements, sizeof(soft_config));
+    soft_config a = {"Word",
                      "Utilities",
                      1293,
                      {21, 6, 2019},
@@ -79,7 +79,7 @@ softConfig* setHardData(int* number_of_elements) {
     };
     configs[0] = a;
 
-    softConfig b = { "Excel",
+    soft_config b = {"Excel",
                      "Utilities",
                      1344,
                      {23, 6, 2019},
@@ -87,7 +87,7 @@ softConfig* setHardData(int* number_of_elements) {
     };
     configs[1] = b;
 
-    softConfig c = { "Clion",
+    soft_config c = {"Clion",
                      "DevTools",
                      3764,
                      {12, 1, 2020},
@@ -95,7 +95,7 @@ softConfig* setHardData(int* number_of_elements) {
     };
     configs[2] = c;
 
-    softConfig d = { "RubyMine",
+    soft_config d = {"RubyMine",
                      "DevTools",
                      2948,
                      {12, 1, 2020},
@@ -103,7 +103,7 @@ softConfig* setHardData(int* number_of_elements) {
     };
     configs[3] = d;
 
-    softConfig e = { "Spotify",
+    soft_config e = {"Spotify",
                      "Entertainment",
                      2948,
                      {12, 1, 2020},
@@ -113,13 +113,13 @@ softConfig* setHardData(int* number_of_elements) {
     return configs;
 }
 
-void groupPrint(softConfig*** configs) {
+void group_print(soft_config*** configs) {
     int i = 0;
     while(configs[i]) {
-        printf("%s:\n", configs[i][0]->functionalClass);
+        printf("%s:\n", configs[i][0]->functional_class);
         int j = 0;
         while (configs[i][j]) {
-            printf("-- %s  (install date: %d.%d.%d)\n", configs[i][j]->name, configs[i][j]->installDate.day, configs[i][j]->installDate.month, configs[i][j]->installDate.year);
+            printf("-- %s  (install date: %d.%d.%d)\n", configs[i][j]->name, configs[i][j]->install_date.day, configs[i][j]->install_date.month, configs[i][j]->install_date.year);
             j++;
         }
         printf("\n");

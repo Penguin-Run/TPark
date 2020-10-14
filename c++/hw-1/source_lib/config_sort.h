@@ -3,16 +3,16 @@
 #ifndef HW_1_SOURCE_H
 #define HW_1_SOURCE_H
 
-date getDate(time_t deltaAgo);
+date get_date(time_t deltaAgo);
 int datecmp(date first, date second);
-int isUnupdated(date first, date second);
-void dateSort(softConfig* configs, softConfig** sortedConfigs, int num_of_elements);
+int is_unupdated(date first, date second);
+void date_sort(soft_config* configs, soft_config** sortedConfigs, int num_of_elements);
 
-int find_group_names(softConfig** configs, char** group_names, int num_of_elements);
-softConfig*** groupSort(softConfig** configs, softConfig*** configGroups, char** group_names, int num_of_groups);
+int find_group_names(soft_config** configs, char** group_names, int num_of_elements);
+soft_config*** group_sort(soft_config** configs, soft_config*** configGroups, char** group_names, int num_of_groups);
 
-softConfig** ascendingSort(softConfig** configs);
-void alphabetical_sort(softConfig*** config_groups);
+soft_config** ascending_sort(soft_config** configs);
+void alphabetical_sort(soft_config*** config_groups);
 
 
 #endif //HW_1_SOURCE_H

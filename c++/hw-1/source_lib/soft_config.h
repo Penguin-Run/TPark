@@ -10,12 +10,12 @@ typedef struct date{
     int year;
 } date;
 
-typedef struct softConfig {
+typedef struct soft_config {
     char* name;
-    char* functionalClass;
-    int versionNumber;
-    date installDate;
-    date lastUpdateDate;
-} softConfig;
+    char* functional_class;
+    int version_number;
+    date install_date;
+    date last_update_date;
+} soft_config;
 
 #endif //HW_1_SOFT_CONFIG_H

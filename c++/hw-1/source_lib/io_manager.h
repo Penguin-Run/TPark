@@ -10,10 +10,10 @@
 
 // input
 void input_date(date* date);
-softConfig* consoleInput(int* number_of_elements);
-softConfig* setHardData(int* number_of_elements);
+soft_config* console_input(int* number_of_elements);
+soft_config* set_hard_data(int* number_of_elements);
 
 // output
-void groupPrint(softConfig*** configs);
+void group_print(soft_config*** configs);
 
 #endif //HW_1_IO_MANAGER2_H

@@ -1,0 +1,40 @@
+jobs:
+  build:
+    docker:
+      - image: "debian:stretch"
+    steps:
+      - checkout
+      - run:
+          name: Installing SUDO
+          command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
+      - run:
+          name: Installing GCC
+          command: 'apt-get update && apt-get install -y gcc g++'
+      - run:
+          name: Installing CppCheck
+          command: 'apt-get update && apt-get install -y cppcheck'
+      - run:
+          name: Installing Valgrind
+          command: 'apt-get update && apt-get install -y valgrind'
+      - run:
+          name: Install CMAKE
+          command: 'apt-get update && sudo apt-get install -y cmake'
+      - run:
+          name: Installing Gcovr
+          command: 'apt-get update && apt-get install -y gcovr'
+      - run:
+          name: Creating Build Files
+          command: 'mkdir c++/hw-1/build && cd c++/hw-1/build && 
+                    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage -G "CodeBlocks - Unix Makefiles" .. && ls -la'
+      - run:
+          name: Creating Binary Files
+          command: 'cmake --build c++/hw-1/build --target Google_Tests_run -- -j 6 && ls -la'
+      - run:
+          name: Start CppCheck
+          command: 'ls -la && cd c++/hw-1 && ls -la && cppcheck source_lib/*  Google_tests/sample_test'
+      - run:
+          name: Start Tests With Valgrind
+          command: 'valgrind c++/hw-1/build/Google_tests/Google_Tests_run'
+      - run:
+          name: Gcovr
+          command: 'cd c++/hw-1 && gcovr -r .'

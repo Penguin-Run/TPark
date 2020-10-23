@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+// TODO: реализовать шаблоны и параметр-функтор для сравнения сложных объектов
+
 class Heap {
 public:
     Heap();
@@ -8,11 +10,12 @@ public:
     ~Heap() = default;
 
     void print();
+    int size();
 
 // Добавить элемент в кучу за O(logn)
     void insert( int element );
 // Извлечь максимум из кучи за O(logn)
-    int ExtractMax();
+    int extractMax();
 // Посмотреть значение максимума в куче за O(1)
     int peekMax() const;
 private:
@@ -55,12 +58,10 @@ void Heap::buildHeap() {
     for(int i = (int)(arr.size() / 2 - 1); i >= 0; --i) {
         siftDown(i);
     }
-    std::cout << std::endl << "start index in buildheap(): " << (int)(arr.size() / 2 - 1) << std::endl;
 }
 
 Heap::Heap(std::vector<int> &_arr) {
-    arr = _arr; // !
-    this->print();
+    arr = _arr;
     buildHeap();
 }
 
@@ -74,7 +75,7 @@ void Heap::print() {
 }
 
 int Heap::peekMax() const {
-    return arr[0];
+    return !arr.empty() ? arr[0] : -1; // -1 обработка случая, когда нету элементов
 }
 
 void Heap::insert(int element) {
@@ -82,7 +83,8 @@ void Heap::insert(int element) {
     siftUp((int)arr.size() - 1);
 }
 
-int Heap::ExtractMax() {
+int Heap::extractMax() {
+    if (arr.empty()) return -1; // -1 обработка случая, когда нету элементов
     int old_max = arr[0];
     arr[0] = arr[arr.size()-1];
     arr.pop_back();
@@ -90,16 +92,52 @@ int Heap::ExtractMax() {
     return old_max;
 }
 
+int Heap::size() {
+    return arr.size();
+}
+
 
 int main() {
-    std::vector<int> vect{1, 2, 2};
-    Heap heap(vect);
-    heap.print();
+    int n;
+    std::cin >> n;
+    std::vector<int> input_vector(n);
+    for (int i = 0; i < n; i++) std::cin >> input_vector[i];
+    int k;
+    std::cin >> k;
 
-    heap.insert(4);
-    heap.print();
+    Heap basket(input_vector);
 
-    heap.ExtractMax();
-    heap.print();
+    int count = 0;
+    while (true) {
+        if (basket.size() == 0) break;
+        int pocket_weight = 0;
+        std::vector<int> pocket;
+        while (true) {
+            if ((pocket_weight + basket.peekMax()) > k)
+                break;
+            int current_max = basket.extractMax();
+            if (current_max == -1)
+                break;
+            pocket.push_back(current_max);
+            pocket_weight += pocket[pocket.size()-1];
+        }
+        for (int & i : pocket) {
+            if (i != 1) {
+                i = i / 2;
+                basket.insert(i);
+            }
+        }
+        count++;
+    }
+
+    std::cout << count;
+
     return 0;
 }
+
+
+/*
+3
+4 3 5
+6
+ */

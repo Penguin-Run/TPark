@@ -35,15 +35,15 @@ int binary_search_index(const int* a_arr, int element, int start_index, int end_
         return -1;
 }
 
-int main() {
+void run(std::istream& input, std::ostream& output) {
     // input
     int n, m;
-    std::cin >> n;
+    input >> n;
     int* a_arr = new int[n];
-    for (int i = 0; i < n; i++) std::cin >> a_arr[i];
-    std::cin >> m;
+    for (int i = 0; i < n; i++) input >> a_arr[i];
+    input >> m;
     int* b_arr = new int[m];
-    for (int i = 0; i < m; i++) std::cin >> b_arr[i];
+    for (int i = 0; i < m; i++) input >> b_arr[i];
 
     // logic
     for (int i = 0; i < m; i++) {
@@ -52,16 +52,22 @@ int main() {
         while (j < n) {
             if (element <= a_arr[j]) {
                 int index = binary_search_index(a_arr, element, j / 2, j);
-                std::cout << index << " ";
+                output << index << " ";
                 break;
             }
             j *= 2;
         }
-        if (j >= n) std::cout << binary_search_index(a_arr, element, 0, n) << " ";
+        if (j >= n) output << binary_search_index(a_arr, element, 0, n) << " ";
     }
 
     // free memory
     delete[] a_arr;
     delete[] b_arr;
+}
+
+int main() {
+
+    run(std::cin, std::cout);
+
     return 0;
 }

@@ -5,7 +5,7 @@
 #define FRONT 31
 #define BACK 32
 
-
+template <class T>
 class Deque {
 public:
     Deque();
@@ -13,10 +13,10 @@ public:
     Deque& operator = (const Deque& obj);
     ~Deque();
 
-    void push_front(unsigned int b);
-    void push_back(unsigned int b);
-    unsigned int pop_front();
-    unsigned int pop_back();
+    void push_front(T b);
+    void push_back(T b);
+    T pop_front();
+    T pop_back();
 
     void print() {
         std::cout << "Printing array elements:" << std::endl;
@@ -26,7 +26,7 @@ public:
         std::cout << std::endl;
     }
 private:
-    unsigned int* array;
+    T* array;
     size_t size;
     size_t capacity;
 
@@ -37,16 +37,18 @@ private:
     void swap(Deque& deque);
 };
 
-Deque::Deque() {
-    array = new unsigned int[10];
+template <class T>
+Deque<T>::Deque() {
+    array = new T[10];
     capacity = 10;
     size = 0;
     head = 5;
     tail = 4;
 }
 
-Deque::Deque(const Deque &obj) {
-    array = new unsigned int[obj.capacity];
+template <class T>
+Deque<T>::Deque(const Deque<T> &obj) {
+    array = new T[obj.capacity];
     for (int i = obj.tail+1; i < obj.head; i++)
         array[i] = obj.array[i];
 
@@ -56,7 +58,8 @@ Deque::Deque(const Deque &obj) {
     tail = obj.tail;
 }
 
-void Deque::swap(Deque &deque) {
+template <class T>
+void Deque<T>::swap(Deque<T> &deque) {
     std::swap(array, deque.array);
 
     std::swap(size, deque.size);
@@ -66,18 +69,21 @@ void Deque::swap(Deque &deque) {
     std::swap(head, deque.head);
 }
 
-Deque &Deque::operator=(const Deque &obj) {
+template <class T>
+Deque<T>& Deque<T>::operator=(const Deque<T> &obj) {
     if (this != &obj) {
         Deque(obj).swap(*this);
     }
     return *this;
 }
 
-Deque::~Deque() {
+template <class T>
+Deque<T>::~Deque() {
     delete[] array;
 }
 
-void Deque::push_front(unsigned int b) {
+template <class T>
+void Deque<T>::push_front(T b) {
     array[head] = b;
     head++;
     size++;
@@ -86,7 +92,8 @@ void Deque::push_front(unsigned int b) {
     if (head == capacity) grow(FRONT);
 }
 
-void Deque::push_back(unsigned int b) {
+template <class T>
+void Deque<T>::push_back(T b) {
     array[tail] = b;
     tail--;
     size++;
@@ -95,7 +102,8 @@ void Deque::push_back(unsigned int b) {
     if (tail == -1) grow(BACK);
 }
 
-unsigned int Deque::pop_front() {
+template <class T>
+T Deque<T>::pop_front() {
     if (head-1 == tail) return -1;
     head--;
     size--;
@@ -103,7 +111,8 @@ unsigned int Deque::pop_front() {
     return array[head];
 }
 
-unsigned int Deque::pop_back() {
+template <class T>
+T Deque<T>::pop_back() {
     if (head-1 == tail) return -1;
     tail++;
     size--;
@@ -111,10 +120,11 @@ unsigned int Deque::pop_back() {
     return array[tail];
 }
 
-void Deque::grow(int direction) {
-    unsigned int* temp = array;
+template <class T>
+void Deque<T>::grow(int direction) {
+    T* temp = array;
 
-    array = new unsigned int[capacity + capacity/2];
+    array = new T[capacity + capacity/2];
 
     if (direction == FRONT) {
         for (int i = 0; i < size; i++) {
@@ -135,7 +145,7 @@ void Deque::grow(int direction) {
 }
 
 void run(std::istream& input, std::ostream& output) {
-    Deque deque;
+    Deque<unsigned int> deque;
 
     int n = 0;
     input >> n;

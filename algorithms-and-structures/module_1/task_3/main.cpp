@@ -38,22 +38,22 @@ private:
 };
 
 Deque::Deque() {
-    this->array = new unsigned int[10];
-    this->capacity = 10;
-    this->size = 0;
-    this->head = 5;
-    this->tail = 4;
+    array = new unsigned int[10];
+    capacity = 10;
+    size = 0;
+    head = 5;
+    tail = 4;
 }
 
 Deque::Deque(const Deque &obj) {
-    this->array = new unsigned int[obj.capacity];
+    array = new unsigned int[obj.capacity];
     for (int i = obj.tail+1; i < obj.head; i++)
-        this->array[i] = obj.array[i];
+        array[i] = obj.array[i];
 
-    this->capacity = obj.capacity;
-    this->size = obj.size;
-    this->head = obj.head;
-    this->tail = obj.tail;
+    capacity = obj.capacity;
+    size = obj.size;
+    head = obj.head;
+    tail = obj.tail;
 }
 
 void Deque::swap(Deque &deque) {
@@ -74,7 +74,7 @@ Deque &Deque::operator=(const Deque &obj) {
 }
 
 Deque::~Deque() {
-    delete[] this->array;
+    delete[] array;
 }
 
 void Deque::push_front(unsigned int b) {
@@ -112,22 +112,22 @@ unsigned int Deque::pop_back() {
 }
 
 void Deque::grow(int direction) {
-    unsigned int* temp = this->array;
+    unsigned int* temp = array;
 
-    this->array = new unsigned int[capacity + capacity/2];
+    array = new unsigned int[capacity + capacity/2];
 
     if (direction == FRONT) {
-        for (int i = 0; i < this->size; i++) {
-            this->array[i + tail + 1] = temp[i + tail + 1];
+        for (int i = 0; i < size; i++) {
+            array[i + tail + 1] = temp[i + tail + 1];
         }
     }
     if (direction == BACK) {
-        for (int i = 0; i < this->size; i++) {
-            this->array[i + capacity/2] = temp[i];
+        for (int i = 0; i < size; i++) {
+            array[i + capacity/2] = temp[i];
         }
 
-        tail = capacity/2 -1;
-        head += capacity/2;
+        tail = (int) capacity/2 -1;
+        head += (int) capacity/2;
     }
 
     capacity += capacity/2;
@@ -172,6 +172,8 @@ void run(std::istream& input, std::ostream& output) {
 }
 
 int main() {
+
     run(std::cin, std::cout);
+
     return 0;
 }

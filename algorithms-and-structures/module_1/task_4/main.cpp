@@ -12,20 +12,26 @@ template <class T>
 class Heap {
 public:
     Heap();
-    explicit Heap( std::vector<T>& _arr );
+    explicit Heap(const T* _arr, size_t arr_size);
     ~Heap() = default;
 
     void print();
-    int size();
+    bool is_empty() const;
 
 // Добавить элемент в кучу за O(logn)
-    void insert(T element);
+    void insert(T& element);
 // Извлечь максимум из кучи за O(logn)
     T extractMax();
 // Посмотреть значение максимума в куче за O(1)
     T peekMax() const;
+
 private:
-    std::vector<T> arr; // динамический массив для хранения элементов кучи
+    T* arr; // динамический массив для хранения элементов кучи
+    size_t size;
+    size_t capacity;
+
+    void grow_arr();
+
     void buildHeap(); // Построение кучи за 0(n)
     void siftDown( int index );
     void siftUp( int i );
@@ -39,9 +45,9 @@ void Heap<T>::siftDown(int index) {
 
     // ищем большего сына если такой есть
     int largest = index;
-    if ((left < arr.size()) && (arr[left] > arr[index]))
+    if ((left < size) && (arr[left] > arr[index]))
         largest = left;
-    if ((right < arr.size()) && (arr[right] > arr[largest]))
+    if ((right < size) && (arr[right] > arr[largest]))
         largest = right;
 
     // если больший сын есть, то проталкиваем его в корень
@@ -65,21 +71,34 @@ void Heap<T>::siftUp(int index) {
 
 template <class T>
 void Heap<T>::buildHeap() {
-    for(int i = (int)(arr.size() / 2 - 1); i >= 0; --i) {
+    for(int i = (int)(size / 2 - 1); i >= 0; --i) {
         siftDown(i);
     }
 }
 
+template<class T>
+void Heap<T>::grow_arr() {
+    T* temp = arr;
+    capacity *= 2;
+    arr = new T[capacity];
+
+    delete[] temp;
+}
+
+template<class T>
+bool Heap<T>::is_empty() const {
+    return size == 0;
+}
+
 template <class T>
-Heap<T>::Heap(std::vector<T> &_arr) {
-    arr = _arr;
+Heap<T>::Heap(const T* _arr, size_t arr_size) : size(arr_size), capacity(arr_size), arr(new T[arr_size]){
+    for (int i = 0; i < arr_size; i++)
+        arr[i] = _arr[i];
     buildHeap();
 }
 
 template <class T>
-Heap<T>::Heap() {
-    arr = {};
-}
+Heap<T>::Heap() : capacity(10), size(0), arr(new T[10]) { }
 
 template <class T>
 void Heap<T>::print() {
@@ -89,29 +108,30 @@ void Heap<T>::print() {
 
 template <class T>
 T Heap<T>::peekMax() const {
-    return !arr.empty() ? arr[0] : NULL; // NULL обработка случая, когда нету элементов
+    return !is_empty() ? arr[0] : NULL; // NULL обработка случая, когда нету элементов
 }
 
 template <class T>
-void Heap<T>::insert(T element) {
-    arr.push_back(element);
-    siftUp((int)arr.size() - 1);
+void Heap<T>::insert(T& element) {
+    // arr.push_back(element);
+    if (size == capacity)
+        grow_arr();
+    arr[size++] = element;
+    siftUp((int)size - 1);
 }
 
 template <class T>
 T Heap<T>::extractMax() {
-    if (arr.empty()) return NULL; // -1 обработка случая, когда нету элементов
+    if (is_empty()) return NULL; // -1 обработка случая, когда нету элементов
     T old_max = arr[0];
-    arr[0] = arr[arr.size()-1];
-    arr.pop_back();
+    arr[0] = arr[size-1];
+
+    size--;
+
     siftDown(0);
     return old_max;
 }
 
-template <class T>
-int Heap<T>::size() {
-    return arr.size();
-}
 
 // сначала
 template<class T>
@@ -121,12 +141,12 @@ public:
 };
 
 template<class T, class Compare = CmpDefault<T>>
-void run(std::vector<T>& input_vector, size_t k, Compare cmp = CmpDefault<T>()) {
-    Heap<T> basket(input_vector);
+void run(T* _arr, size_t _arr_size, size_t k, Compare cmp = CmpDefault<T>()) {
+    Heap<T> basket(_arr, _arr_size);
 
     int count = 0;
     while (true) {
-        if (basket.size() == 0) break;
+        if (basket.is_empty()) break;
         T pocket_weight = 0;
         std::vector<T> pocket;
         while (true) {
@@ -154,14 +174,14 @@ void run(std::vector<T>& input_vector, size_t k, Compare cmp = CmpDefault<T>()) 
 // эти классы должны поддерживать также арифметику +, /
 int main() {
     // input
-    int n;
+    size_t n;
     std::cin >> n;
-    std::vector<int> input_vector(n);
-    for (int i = 0; i < n; i++) std::cin >> input_vector[i];
+    int* input_arr = new int[n];
+    for (int i = 0; i < n; i++) std::cin >> input_arr[i];
     int k;
     std::cin >> k;
 
-    run(input_vector, k);
+    run(input_arr, n, k);
 
     return 0;
 }

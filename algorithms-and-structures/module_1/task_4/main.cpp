@@ -8,7 +8,13 @@
 Определить за сколько подходов Вовочка съест все фрукты в корзине.
  */
 
-template <class T>
+template<class T>
+class CmpDefault {
+public:
+    bool operator()( const T& l, const int& r ) { return l < r; }
+};
+
+template <class T, class Compare = CmpDefault<T>>
 class Heap {
 public:
     Heap();
@@ -29,6 +35,8 @@ private:
     T* arr; // динамический массив для хранения элементов кучи
     size_t size;
     size_t capacity;
+    Compare cmp;
+
 
     void grow_arr();
 
@@ -38,16 +46,16 @@ private:
 };
 
 // Проталкивание элемента вниз
-template <class T>
-void Heap<T>::siftDown(int index) {
+template <class T, class Compare>
+void Heap<T, Compare>::siftDown(int index) {
     int left = 2 * index + 1;
     int right = 2 * index + 2;
 
     // ищем большего сына если такой есть
     int largest = index;
-    if ((left < size) && (arr[left] > arr[index]))
+    if ((left < size) && cmp(arr[index], arr[left]))
         largest = left;
-    if ((right < size) && (arr[right] > arr[largest]))
+    if ((right < size) && cmp(arr[largest], arr[right]))
         largest = right;
 
     // если больший сын есть, то проталкиваем его в корень
@@ -58,26 +66,26 @@ void Heap<T>::siftDown(int index) {
 }
 
 // Проталкивание элемента наверх
-template <class T>
-void Heap<T>::siftUp(int index) {
+template <class T, class Compare>
+void Heap<T, Compare>::siftUp(int index) {
     while( index > 0 ) {
         int parent = ( index - 1 ) / 2;
-        if( arr[index] <= arr[parent] )
+        if( !cmp(arr[parent], arr[index]) )
             return;
         std::swap( arr[index], arr[parent] );
         index = parent;
     }
 }
 
-template <class T>
-void Heap<T>::buildHeap() {
+template <class T, class Compare>
+void Heap<T, Compare>::buildHeap() {
     for(int i = (int)(size / 2 - 1); i >= 0; --i) {
         siftDown(i);
     }
 }
 
-template<class T>
-void Heap<T>::grow_arr() {
+template <class T, class Compare>
+void Heap<T, Compare>::grow_arr() {
     T* temp = arr;
     capacity *= 2;
     arr = new T[capacity];
@@ -85,34 +93,34 @@ void Heap<T>::grow_arr() {
     delete[] temp;
 }
 
-template<class T>
-bool Heap<T>::is_empty() const {
+template <class T, class Compare>
+bool Heap<T, Compare>::is_empty() const {
     return size == 0;
 }
 
-template <class T>
-Heap<T>::Heap(const T* _arr, size_t arr_size) : size(arr_size), capacity(arr_size), arr(new T[arr_size]){
+template <class T, class Compare>
+Heap<T, Compare>::Heap(const T* _arr, size_t arr_size) : size(arr_size), capacity(arr_size), arr(new T[arr_size]){
     for (int i = 0; i < arr_size; i++)
         arr[i] = _arr[i];
     buildHeap();
 }
 
-template <class T>
-Heap<T>::Heap() : capacity(10), size(0), arr(new T[10]) { }
+template <class T, class Compare>
+Heap<T, Compare>::Heap() : capacity(10), size(0), arr(new T[10]) { }
 
-template <class T>
-void Heap<T>::print() {
+template <class T, class Compare>
+void Heap<T, Compare>::print() {
     for (int i : arr) std::cout << i << " ";
     std::cout << std::endl;
 }
 
-template <class T>
-T Heap<T>::peekMax() const {
+template <class T, class Compare>
+T Heap<T, Compare>::peekMax() const {
     return !is_empty() ? arr[0] : NULL; // NULL обработка случая, когда нету элементов
 }
 
-template <class T>
-void Heap<T>::insert(T& element) {
+template <class T, class Compare>
+void Heap<T, Compare>::insert(T& element) {
     // arr.push_back(element);
     if (size == capacity)
         grow_arr();
@@ -120,8 +128,8 @@ void Heap<T>::insert(T& element) {
     siftUp((int)size - 1);
 }
 
-template <class T>
-T Heap<T>::extractMax() {
+template <class T, class Compare>
+T Heap<T, Compare>::extractMax() {
     if (is_empty()) return NULL; // -1 обработка случая, когда нету элементов
     T old_max = arr[0];
     arr[0] = arr[size-1];
@@ -133,16 +141,9 @@ T Heap<T>::extractMax() {
 }
 
 
-// сначала
-template<class T>
-class CmpDefault {
-public:
-    bool operator()( const T& l, const int& r ) { return l < r; }
-};
-
 template<class T, class Compare = CmpDefault<T>>
 void run(T* _arr, size_t _arr_size, size_t k, Compare cmp = CmpDefault<T>()) {
-    Heap<T> basket(_arr, _arr_size);
+    Heap<T, Compare> basket(_arr, _arr_size);
 
     int count = 0;
     while (true) {

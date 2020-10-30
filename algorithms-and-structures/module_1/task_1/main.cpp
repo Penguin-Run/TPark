@@ -1,15 +1,15 @@
 #include <iostream>
 
-int main() {
+void run(std::istream& input, std::ostream& output) {
     // input
     int n, m, k;
-    std::cin >> n;
+    input >> n;
     int* a_arr = new int[n];
-    for (int i = 0; i < n; i++) std::cin >> a_arr[i];
-    std::cin >> m;
+    for (int i = 0; i < n; i++) input >> a_arr[i];
+    input >> m;
     int* b_arr = new int[m];
-    for (int i = 0; i < m; i++) std::cin >> b_arr[i];
-    std::cin >> k;
+    for (int i = 0; i < m; i++) input >> b_arr[i];
+    input >> k;
 
     // logic
     int index = 0;
@@ -28,10 +28,16 @@ int main() {
         }
     }
 
-    std::cout << pairs_count;
+    output << pairs_count;
 
     // free memory
     delete[] a_arr;
     delete[] b_arr;
+}
+
+int main() {
+
+    run(std::cin, std::cout);
+
     return 0;
 }

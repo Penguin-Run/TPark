@@ -1,5 +1,5 @@
 class StorageWrapper {
-private:
+public:
 	DBWrapper() = default;
 	virtual ~DBWrapper() {}
 

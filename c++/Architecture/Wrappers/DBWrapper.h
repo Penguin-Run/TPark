@@ -1,7 +1,5 @@
-// Status - структура, хранящая в себе виды ошибок
-
 class DBWrapper {
-private:
+public:
 	DBWrapper() = default;
 	virtual ~DBWrapper() {}
 
@@ -18,11 +16,11 @@ protected:
 
 public:
 	// TODO: решить, где будет генерация id для user и room (мб в DataManager)
-	virtual Status& add_user( const User& user_info ) = 0;
-	virtual Status& add_room( const Room& room_info ) = 0;
-	virtual Status& add_post( const Post& post_info ) = 0; // room_id and user_id inside Post
+	virtual Status& add_user( const std::string& user_id, const User& user_info ) = 0;
+	virtual Status& add_room( const std::string& room_id, const Room& room_info ) = 0;
+	virtual Status& add_post( const std::string& post_id, const Post& post_info ) = 0; // room_id and user_id inside Post
 	virtual Status& add_user_to_room( const std::string& room_id, const std::string& user_id ) = 0;
-	virtual Status& add_session( const Session& session_info ) = 0;
+	virtual Status& add_session( const std::string& session_id, const Session& session_info ) = 0;
 
 	virtual Status& remove_user( const std::string& user_id ) = 0;
 	virtual Status& remove_room( const std::string& room_id ) = 0;

@@ -1,5 +1,5 @@
 class PostgreDBWrapper : public DBWrapper {
-private:
+public:
 	PostgreDBWrapper() = default;
 	virtual ~PostgreDBWrapper() {}
 
